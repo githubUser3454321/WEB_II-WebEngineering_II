@@ -67,5 +67,8 @@ Danach im Browser öffnen:
 - `POST /api/users`
 - `POST /api/login`
 
+## Schritt-für-Schritt Anleitung
+- Siehe `ANLEITUNG_SCHRITT_FUER_SCHRITT.md`
+
 ## Hinweis
 Diese Fassung ist auf Verständlichkeit und Nachvollziehbarkeit ausgerichtet.
