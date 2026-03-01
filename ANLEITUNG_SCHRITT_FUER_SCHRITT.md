@@ -37,6 +37,7 @@ npm -v
 **Wie installieren?**
 - MySQL Community Server installieren.
 - Während der Installation Root-Passwort setzen.
+- Anschliessend DB_PASSWORD und andere Werte in der Datei '\backend\src\db.js' schreiben.
 
 **Testen ob es läuft:**
 ```bash
