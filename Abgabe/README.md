@@ -15,7 +15,7 @@ Bitte installiere folgende Tools:
 
 - **Node.js** (empfohlen: aktuelle LTS-Version)
 - **npm** (ist mit Node.js dabei)
-- **Python 3** (für den statischen Frontend-Server)
+- **npm / Python 3** (für den statischen Frontend-Server)
 
 ## 2) Backend starten
 
