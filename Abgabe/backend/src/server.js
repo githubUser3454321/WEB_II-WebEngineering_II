@@ -23,6 +23,16 @@ app.get("/api/health", async (req, res) => {
     }
 });
 
+// Backward-compatible alias used by earlier README instructions.
+app.get("/api/status", async (req, res) => {
+    try {
+        await pool.query("SELECT 1");
+        res.json({ status: "ok", db: "connected" });
+    } catch (error) {
+        res.status(500).json({ status: "error", db: "not connected", message: error.message });
+    }
+});
+
 app.get("/api/currencies", async (req, res) => {
     try {
         const [rows] = await pool.query("SELECT id, iso_code, name, countries FROM currency ORDER BY iso_code ASC");

@@ -2,7 +2,7 @@
 
 Dieser Ordner enthält alles, was für die Abgabe erforderlich ist:
 
-- `backend/` – Node.js + Express + SQLite API
+- `backend/` – Node.js + Express + MySQL API
 - `frontend/` – HTML/CSS/JS Oberfläche
 
 ## 1) Voraussetzungen
@@ -36,10 +36,12 @@ Bitte installiere folgende Tools:
 5. Kontrolle im Browser (optional):
 
    ```
-   http://127.0.0.1:3000/api/status
+   http://127.0.0.1:3000/api/health
    ```
 
    Wenn alles läuft, sollte ein JSON-Status angezeigt werden.
+
+   Hinweis: Aus Kompatibilitätsgründen funktioniert auch `http://127.0.0.1:3000/api/status`.
 
 ## 3) Frontend starten
 
@@ -73,6 +75,7 @@ Das Frontend ist statisch und kann z. B. über einen einfachen lokalen Server au
 ## 4) Anwendung testen
 
 - Backend muss auf `http://127.0.0.1:3000` laufen.
+- Zusätzlich muss MySQL laufen und die Datenbank `gtc` mit `backend/sql/init.sql` initialisiert sein.
 - Danach Frontend öffnen.
 - Folgende Bereiche prüfen:
   - Status
