@@ -44,7 +44,7 @@ async function loadCurrencies() {
         document.getElementById("statusOutput").innerHTML = "<p>Backend verbunden: Currencies geladen.</p>";
     } catch (error) {
         currencies = fallbackCurrencies;
-        document.getElementById("statusOutput").innerHTML = "<p>Backend nicht erreichbar. Fallback-Daten für Currencies aktiv.</p>";
+        document.getElementById("statusOutput").innerHTML = "<p>Backend oder Datenbank nicht erreichbar. Fallback-Daten für Currencies aktiv.</p>";
     }
 }
 
