@@ -155,6 +155,7 @@ Erwartet: JSON-Antwort mit Status.
 ## Problem: `ECONNREFUSED` / Backend nicht erreichbar
 - Prüfen ob `npm start` läuft.
 - Port 3000 frei?
+- DB_PASSWORD korrekt in der Datei '\backend\src\db.js' gesetzt?
 
 ## Problem: DB Fehler beim Backend-Start
 - Läuft MySQL?
