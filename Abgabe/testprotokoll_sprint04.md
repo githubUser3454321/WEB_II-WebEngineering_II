@@ -23,7 +23,7 @@
 | TC-04-009 | 2026-01-15 10:03 | Matthias Oberholzer | Erstellen einer neuen Transaktion über `POST /api/transactions`. | Integrationstest | Transaktion wird persistent gespeichert und bestätigt. | Transaktion wurde gespeichert und mit Erfolg quittiert. | bestanden |
 | TC-04-010 | 2026-01-15 10:11 | Matthias Oberholzer | Abruf der Transaktionsliste über `GET /api/transactions` nach dem Erstellen eines Eintrags. | Integrationstest | Neu erstellte Transaktion erscheint in der Liste. | Eintrag ist in der Liste vorhanden. | bestanden |
 | TC-04-011 | 2026-01-15 10:20 | Matthias Oberholzer | Lasttest mit 50 parallelen `GET /api/health`-Requests (lokal). | Lasttest | Keine Serverabstürze, Antwortzeit bleibt stabil, alle Requests beantworten erfolgreich. | 49/50 Requests erfolgreich; 1 Timeout bei >2 s. | fehlgeschlagen |
-| TC-04-012 | 2026-01-15 10:35 | Matthias Oberholzer | Test der Fallback-Daten im Frontend bei gestopptem Backend. | Integrationstest | Frontend zeigt definierte Fallback-Werte für Currencies/Rates an. | Test wegen Zeitmangel in dieser Session nicht durchgeführt. | nicht durchgeführt |
+| TC-04-012 | 2026-01-15 10:35 | Matthias Oberholzer | Test der Fallback-Daten im Frontend bei gestopptem Backend. | Integrationstest | Frontend zeigt definierte Fallback-Werte für Currencies/Rates an. | Test OK | bestanden |
 
 ## Kurzfazit
 
