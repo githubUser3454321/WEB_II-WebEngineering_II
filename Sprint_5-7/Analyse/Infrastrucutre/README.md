@@ -30,3 +30,10 @@ Diese Anleitung übersetzt die offenen Punkte aus dem letzten Chat in eine **kon
 2. Phase 2 Regeln setzen und Sperre nachweisen.
 3. Phase 3 Smoke- und Negativtests gegen Live-URLs fahren.
 4. Phase 4 Artefakte bündeln und finale Doku als Single Source of Truth abschließen.
+
+## Qualitätsvorgaben (verbindlich für alle Phasen)
+
+- Öffentliche Exposition nur über `443` (HTTPS), **kein direkter Internetzugriff auf Backend-Port `3000`**.
+- Datenbank-Port `3306` bleibt intern und ist nur vom Backend erreichbar.
+- Secrets nicht im Repository speichern; produktiv Secret-Store nutzen.
+- Für Netzwerk/Security muss eine nachvollziehbare Port-Matrix in Phase 2 gepflegt werden.

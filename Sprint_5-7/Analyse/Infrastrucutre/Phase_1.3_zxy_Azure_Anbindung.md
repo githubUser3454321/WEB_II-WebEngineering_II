@@ -71,11 +71,22 @@ Mindestanforderungen:
 - TLS/HTTPS (z. B. Reverse Proxy mit Zertifikat)
 - Feste DNS-Adresse (z. B. DDNS)
 - Port 3000 nicht „roh“ ohne Schutz direkt ins Internet
+- Externer Zugriff ausschließlich über `443` auf Proxy/Gateway
 
 Empfehlung:
 - Nginx/Caddy als Reverse Proxy vor Backend
 - Nur `/api/*` nach intern `192.168.10.20:3000` weiterleiten
 - API-Key-Prüfung im Backend aktiv lassen
+
+Beispiel Nginx-Regel (verkürzt):
+
+```nginx
+location /api/ {
+  proxy_pass http://192.168.10.20:3000/api/;
+  proxy_set_header Host $host;
+  proxy_set_header X-Forwarded-Proto https;
+}
+```
 
 Dann im Frontend konfigurieren:
 
@@ -89,8 +100,10 @@ API_BASE_URL=https://api.deinprojekt.de
 
 Im Backend `.env` prüfen:
 
-- `ALLOWED_ORIGIN=https://<deine-azure-frontend-url>`
+- `ALLOWED_ORIGIN=https://<deine-azure-frontend-url>` (in Produktion keine Wildcards)
 - `API_KEY=<starker_schluessel>`
+
+Produktiv keine Secrets in Git speichern; stattdessen Secret-Store (z. B. Azure Key Vault) oder geschützte Runtime-Variablen nutzen.
 
 Danach Backend neu starten:
 
@@ -109,7 +122,7 @@ Wenn du Azure-VMs nutzt:
 2. Nur notwendige Ports erlauben:
    - 22 nur von Admin-IP
    - 80/443 öffentlich (für Frontend/Proxy)
-   - 3000 nicht öffentlich, wenn vermeidbar
+   - 3000 nicht öffentlich
 3. Alles andere blockieren.
 
 ---

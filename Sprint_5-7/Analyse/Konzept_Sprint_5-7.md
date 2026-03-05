@@ -99,7 +99,7 @@ Es wird **Variante A** umgesetzt, da sie die Sicherheitsanforderungen (insb. DB-
 ### Netzwerkplan (inkl. pfSense)
 - Öffentlich freigegeben:
   - Frontend-Port (HTTPS/443)
-  - optional Backend-API-Port (nur falls notwendig, möglichst restriktiv)
+  - API-Zugriff öffentlich ausschließlich via HTTPS/443 (über Reverse-Proxy/Gateway)
 - Nicht öffentlich:
   - DB-Port (z. B. 5432/3306) – nur Backend-IP erlaubt
 - pfSense-Regeln:
@@ -125,10 +125,11 @@ Es wird **Variante A** umgesetzt, da sie die Sicherheitsanforderungen (insb. DB-
 
 ### Sicherheitskonzept
 - Authentifizierung: API-Key oder Bearer-Token (mindestens eine Methode verpflichtend)
-- Secrets in `.env` / Secret-Datei (nicht im Git)
+- Secrets in `.env` / Secret-Datei (nicht im Git), produktiv bevorzugt Secret-Store (z. B. Key Vault)
 - CORS nur für erlaubte Frontend-Domain
 - Input-Validierung auf Backend-Ebene
 - Fehlerantworten ohne sensible interne Details
+- Backend-Port `3000` bleibt intern und wird nicht direkt aus dem Internet exponiert
 
 ---
 

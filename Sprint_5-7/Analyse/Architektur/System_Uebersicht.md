@@ -9,7 +9,8 @@ Kurze, professionelle Übersicht der 3-Tier-Architektur für Sprint 5–7.
 ```mermaid
 flowchart LR
     U[Benutzer\nBrowser] --> FE[Frontend\nPresentation Tier\n(Azure oder lokal)]
-    FE -->|HTTPS 443 / API Calls| BE[Backend API\nBusiness Tier\n(Ubuntu VM)]
+    FE -->|HTTPS 443 / API Calls| RP[Reverse Proxy / API Gateway\nEdge Tier]
+    RP -->|Intern 3000| BE[Backend API\nBusiness Tier\n(Ubuntu VM)]
     BE -->|SQL 3306 intern| DB[(Datenbank\nPersistence Tier\n(Local/VM))]
     BE --> LOG[(Request-/Error-Logs)]
 
@@ -17,7 +18,7 @@ flowchart LR
     classDef internal fill:#f3f8e8,stroke:#5f7a1f,stroke-width:1px;
     classDef secure fill:#fff0f0,stroke:#a33,stroke-width:1px;
 
-    class U,FE public;
+    class U,FE,RP public;
     class BE,LOG internal;
     class DB secure;
 ```
@@ -40,5 +41,6 @@ flowchart LR
 ## Sicherheits-Check
 - [ ] DB ist nicht öffentlich exponiert
 - [ ] DB nur vom Backend erreichbar
-- [ ] Secrets nur via `.env` / Secret-Datei
+- [ ] Backend-Port `3000` ist nicht öffentlich exponiert
+- [ ] Secrets nicht im Git; produktiv über Secret-Store/Runtime-Variablen
 - [ ] Authentifizierung über Token oder API-Key aktiv
