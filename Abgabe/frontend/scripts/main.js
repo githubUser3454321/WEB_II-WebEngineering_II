@@ -1,6 +1,7 @@
 "use strict";
 
 let apiBase = "http://127.0.0.1:3000/api";
+let apiKey = "";
 
 let currencies = [];
 let rates = [];
@@ -19,7 +20,40 @@ let fallbackRates = [
     { "id": 3, "base_currency": "EUR", "target_currency": "CHF", "rate_value": 0.97, "rate_date": "2026-02-01 10:00:00" }
 ];
 
-async function init() {
+function getApiHeaders(auth = false) {
+    const headers = { "Content-Type": "application/json" };
+    if (auth && apiKey) {
+        headers["x-api-key"] = apiKey;
+    }
+    return headers;
+}
+
+function extractErrorMessage(payload, fallbackMessage) {
+    if (payload && typeof payload.message === "string") {
+        return payload.message;
+    }
+    return fallbackMessage;
+}
+
+async function apiRequest(path, options = {}) {
+    const response = await fetch(`${apiBase}${path}`, options);
+    const text = await response.text();
+    const payload = text ? JSON.parse(text) : null;
+    return { response, payload };
+}
+
+function applyApiConfig() {
+    const baseInput = document.getElementById("apiBaseInput");
+    const apiKeyInput = document.getElementById("apiKeyInput");
+
+    apiBase = baseInput.value.trim().replace(/\/$/, "") || "http://127.0.0.1:3000/api";
+    apiKey = apiKeyInput.value.trim();
+
+    document.getElementById("statusOutput").innerHTML = "<p>API-Konfiguration übernommen. Daten werden neu geladen ...</p>";
+    reloadAll();
+}
+
+async function reloadAll() {
     await loadCurrencies();
     await loadRates();
     await loadTransactions();
@@ -28,6 +62,13 @@ async function init() {
     renderRates();
     renderTransactions();
     renderCurrencySelects();
+}
+
+async function init() {
+    document.getElementById("apiBaseInput").value = apiBase;
+    document.getElementById("apiKeyInput").value = apiKey;
+
+    await reloadAll();
 
     document.getElementById("calculatorOutput").innerHTML = "<p>Noch keine Berechnung.</p>";
     document.getElementById("loginOutput").innerHTML = "<p>Noch kein Login.</p>";
@@ -36,11 +77,12 @@ async function init() {
 
 async function loadCurrencies() {
     try {
-        let response = await fetch(`${apiBase}/currencies`);
+        const { response, payload } = await apiRequest("/currencies");
         if (!response.ok) {
             throw new Error("Could not load currencies.");
         }
-        currencies = await response.json();
+
+        currencies = payload;
         document.getElementById("statusOutput").innerHTML = "<p>Backend verbunden: Currencies geladen.</p>";
     } catch (error) {
         currencies = fallbackCurrencies;
@@ -50,11 +92,12 @@ async function loadCurrencies() {
 
 async function loadRates() {
     try {
-        let response = await fetch(`${apiBase}/rates`);
+        const { response, payload } = await apiRequest("/rates");
         if (!response.ok) {
             throw new Error("Could not load rates.");
         }
-        rates = await response.json();
+
+        rates = payload;
     } catch (error) {
         rates = fallbackRates;
     }
@@ -62,11 +105,12 @@ async function loadRates() {
 
 async function loadTransactions() {
     try {
-        let response = await fetch(`${apiBase}/transactions`);
+        const { response, payload } = await apiRequest("/transactions");
         if (!response.ok) {
             throw new Error("Could not load transactions.");
         }
-        transactions = await response.json();
+
+        transactions = payload;
     } catch (error) {
         transactions = [];
     }
@@ -101,10 +145,25 @@ function renderRates() {
 function renderTransactions() {
     let output = "";
     output += "<table border='1' cellpadding='4'>";
-    output += "<tr><th>ID</th><th>Date</th><th>User</th><th>Amount</th><th>From</th><th>To</th><th>Rate</th></tr>";
+    output += "<tr><th>ID</th><th>Date</th><th>User</th><th>Amount</th><th>From</th><th>To</th><th>Rate</th><th>Status</th><th>Aktionen</th></tr>";
 
     transactions.forEach(transaction => {
-        output += `<tr><td>${transaction.id}</td><td>${transaction.transaction_date}</td><td>${transaction.user_login}</td><td>${transaction.source_amount}</td><td>${transaction.source_currency}</td><td>${transaction.target_currency}</td><td>${transaction.exchange_rate}</td></tr>`;
+        output += `<tr>
+            <td>${transaction.id}</td>
+            <td>${transaction.transaction_date}</td>
+            <td>${transaction.user_login}</td>
+            <td><input id='editAmount-${transaction.id}' type='number' step='0.01' value='${transaction.source_amount}'></td>
+            <td>${transaction.source_currency}</td>
+            <td>${transaction.target_currency}</td>
+            <td><input id='editRate-${transaction.id}' type='number' step='0.0001' value='${transaction.exchange_rate}'></td>
+            <td>${transaction.status || "pending"}</td>
+            <td>
+                <button onclick='updateTransaction(${transaction.id});'>Update</button>
+                <button onclick='setTransactionStatus(${transaction.id}, "approved");'>Approve</button>
+                <button onclick='setTransactionStatus(${transaction.id}, "cancelled");'>Cancel</button>
+                <button onclick='deleteTransaction(${transaction.id});'>Delete</button>
+            </td>
+        </tr>`;
     });
 
     output += "</table>";
@@ -149,20 +208,19 @@ async function doLogin() {
     let password = document.getElementById("loginPassword").value;
 
     try {
-        let response = await fetch(`${apiBase}/login`, {
+        const { response, payload } = await apiRequest("/login", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: getApiHeaders(),
             body: JSON.stringify({ login: login, password: password })
         });
 
         if (!response.ok) {
-            throw new Error("Invalid login");
+            throw new Error(extractErrorMessage(payload, "Invalid login"));
         }
 
-        let user = await response.json();
-        document.getElementById("loginOutput").innerHTML = `<p>Login ok: ${user.first_name} ${user.last_name} (${user.login})</p>`;
+        document.getElementById("loginOutput").innerHTML = `<p>Login ok: ${payload.first_name} ${payload.last_name} (${payload.login})</p>`;
     } catch (error) {
-        document.getElementById("loginOutput").innerHTML = "<p>Login fehlgeschlagen oder Backend nicht erreichbar.</p>";
+        document.getElementById("loginOutput").innerHTML = `<p>Login fehlgeschlagen: ${error.message}</p>`;
     }
 }
 
@@ -178,20 +236,82 @@ async function createTransaction() {
     };
 
     try {
-        let response = await fetch(`${apiBase}/transactions`, {
+        const { response, payload } = await apiRequest("/transactions", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: getApiHeaders(true),
             body: JSON.stringify(transactionData)
         });
 
         if (!response.ok) {
-            throw new Error("Could not save transaction.");
+            throw new Error(extractErrorMessage(payload, "Could not save transaction."));
         }
 
-        document.getElementById("transactionFormOutput").innerHTML = "<p>Transaktion gespeichert.</p>";
+        document.getElementById("transactionFormOutput").innerHTML = `<p>Transaktion gespeichert (ID ${payload.id}).</p>`;
         await loadTransactions();
         renderTransactions();
     } catch (error) {
-        document.getElementById("transactionFormOutput").innerHTML = "<p>Speichern fehlgeschlagen oder Backend nicht erreichbar.</p>";
+        document.getElementById("transactionFormOutput").innerHTML = `<p>Speichern fehlgeschlagen: ${error.message}</p>`;
+    }
+}
+
+async function updateTransaction(id) {
+    const source_amount = Number(document.getElementById(`editAmount-${id}`).value);
+    const exchange_rate = Number(document.getElementById(`editRate-${id}`).value);
+
+    try {
+        const { response, payload } = await apiRequest(`/transactions/${id}`, {
+            method: "PUT",
+            headers: getApiHeaders(true),
+            body: JSON.stringify({ source_amount, exchange_rate })
+        });
+
+        if (!response.ok) {
+            throw new Error(extractErrorMessage(payload, "Could not update transaction."));
+        }
+
+        document.getElementById("transactionFormOutput").innerHTML = `<p>Transaktion ${id} aktualisiert.</p>`;
+        await loadTransactions();
+        renderTransactions();
+    } catch (error) {
+        document.getElementById("transactionFormOutput").innerHTML = `<p>Update fehlgeschlagen: ${error.message}</p>`;
+    }
+}
+
+async function setTransactionStatus(id, status) {
+    try {
+        const { response, payload } = await apiRequest(`/transactions/${id}/status`, {
+            method: "POST",
+            headers: getApiHeaders(true),
+            body: JSON.stringify({ status })
+        });
+
+        if (!response.ok) {
+            throw new Error(extractErrorMessage(payload, "Could not change status."));
+        }
+
+        document.getElementById("transactionFormOutput").innerHTML = `<p>Status geändert: ${payload.old_status} → ${payload.new_status} (ID ${payload.id}).</p>`;
+        await loadTransactions();
+        renderTransactions();
+    } catch (error) {
+        document.getElementById("transactionFormOutput").innerHTML = `<p>Statuswechsel fehlgeschlagen: ${error.message}</p>`;
+    }
+}
+
+async function deleteTransaction(id) {
+    try {
+        const { response, payload } = await apiRequest(`/transactions/${id}`, {
+            method: "DELETE",
+            headers: getApiHeaders(true)
+        });
+
+        if (!response.ok) {
+            throw new Error(extractErrorMessage(payload, "Could not delete transaction."));
+        }
+
+        document.getElementById("transactionFormOutput").innerHTML = `<p>Transaktion ${id} gelöscht.</p>`;
+        await loadTransactions();
+        renderTransactions();
+    } catch (error) {
+        document.getElementById("transactionFormOutput").innerHTML = `<p>Löschen fehlgeschlagen: ${error.message}</p>`;
     }
 }

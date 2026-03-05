@@ -28,4 +28,4 @@
 1. Plattform-Deployment effektiv auf drei Infrastrukturen durchführen (Azure, Ubuntu VM, Local DB).
 2. Firewall-/pfSense-Regeln produktiv setzen und mit externen Zugriffstests dokumentieren.
 3. Mindestens fünf API-Tests gegen die echte verteilte Umgebung ausführen und Resultate als Artefakte ablegen.
-4. GUI auf neue Endpunkte (Statuswechsel, Update/Delete-Flow) erweitern.
+4. Deployment-Artefakte erweitern (Screenshots, API-Testreport, Log-Auszüge) und final ablegen.
