@@ -85,6 +85,22 @@ Ein belastbares, umsetzbares Konzept für eine produktionsnahe, verteilte 3-Tier
 ### Entscheidung
 Es wird **Variante A** umgesetzt, da sie die Sicherheitsanforderungen (insb. DB-Abschirmung) am besten erfüllt und gleichzeitig in 12 Lektionen realistisch umsetzbar bleibt.
 
+### Architektur-Wahl konkretisiert (Platzierung der Umgebungen)
+
+Für Missverständnisse zur eigentlichen Platzierung gilt ab jetzt explizit:
+
+- **Sprint-Zielarchitektur (verbindlich für Abgabe):**
+  - Frontend in **Azure** (öffentlich via 443)
+  - Backend auf **Ubuntu-VM (VMware)**
+  - Datenbank **lokal** (nur intern erreichbar)
+- **Exposition:** API nur über Reverse-Proxy/Gateway auf `443`; Backend-Port `3000` bleibt intern.
+
+Zusätzliche Entscheidungsregel für spätere Iterationen (nach Sprint 7):
+
+- Wenn Stabilität/Betrieb wichtiger wird als Labor-Nähe, ist eine Migration auf
+  **Frontend + Backend in Azure** (DB weiterhin privat) als nächster Architektur-Schritt zu prüfen.
+- Diese Migration ist **nicht** Bestandteil der aktuellen Sprint-Abnahme, wird aber im Runbook als Option dokumentiert.
+
 ---
 
 ## 4) Grobarchitektur / Umsetzungskonzept
@@ -99,7 +115,7 @@ Es wird **Variante A** umgesetzt, da sie die Sicherheitsanforderungen (insb. DB-
 ### Netzwerkplan (inkl. pfSense)
 - Öffentlich freigegeben:
   - Frontend-Port (HTTPS/443)
-  - optional Backend-API-Port (nur falls notwendig, möglichst restriktiv)
+  - API-Zugriff öffentlich ausschließlich via HTTPS/443 (über Reverse-Proxy/Gateway)
 - Nicht öffentlich:
   - DB-Port (z. B. 5432/3306) – nur Backend-IP erlaubt
 - pfSense-Regeln:
@@ -125,10 +141,11 @@ Es wird **Variante A** umgesetzt, da sie die Sicherheitsanforderungen (insb. DB-
 
 ### Sicherheitskonzept
 - Authentifizierung: API-Key oder Bearer-Token (mindestens eine Methode verpflichtend)
-- Secrets in `.env` / Secret-Datei (nicht im Git)
+- Secrets in `.env` / Secret-Datei (nicht im Git), produktiv bevorzugt Secret-Store (z. B. Key Vault)
 - CORS nur für erlaubte Frontend-Domain
 - Input-Validierung auf Backend-Ebene
 - Fehlerantworten ohne sensible interne Details
+- Backend-Port `3000` bleibt intern und wird nicht direkt aus dem Internet exponiert
 
 ---
 
@@ -174,4 +191,3 @@ Es wird **Variante A** umgesetzt, da sie die Sicherheitsanforderungen (insb. DB-
 - `Auftrag/`: formaler Arbeitsauftrag / Aufgabenbeschreibung
 - `Analyse/`: dieses Konzeptdokument
 - `Abgabe/`: Umsetzungsnachweise (Tests, Doku, Belege)
-

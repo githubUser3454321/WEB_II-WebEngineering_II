@@ -22,7 +22,7 @@ Für dein aktuelles Setup gibt es zwei praktikable Varianten:
 ### Variante A (einfach): Nur Frontend in Azure
 - Azure hostet nur die statische Oberfläche.
 - Backend bleibt in Ubuntu-VM lokal.
-- Nachteil: Lokales Backend muss aus dem Internet erreichbar sein (Portfreigabe/DDNS/Reverse Proxy nötig).
+- Nachteil: Ein öffentlicher API-Endpunkt (typisch Reverse-Proxy auf `443`) muss sauber betrieben werden.
 
 ### Variante B (stabiler): Frontend + Backend in Azure
 - Azure hostet Frontend.
@@ -30,6 +30,11 @@ Für dein aktuelles Setup gibt es zwei praktikable Varianten:
 - MySQL bleibt lokal oder wandert später ebenfalls in Azure.
 
 Für Anfänger ist Variante A oft schneller startbar, Variante B ist langfristig meist sauberer.
+
+### Entscheidung für diesen Sprint
+
+- Für Sprint 5–7 bleibt die verbindliche Architektur: **Variante A** (Frontend in Azure, Backend auf Ubuntu-VM, DB lokal).
+- Variante B ist als **spätere Betriebsoptimierung** zu verstehen und wird aktuell nicht als Abnahmepflicht umgesetzt.
 
 ---
 
@@ -71,11 +76,22 @@ Mindestanforderungen:
 - TLS/HTTPS (z. B. Reverse Proxy mit Zertifikat)
 - Feste DNS-Adresse (z. B. DDNS)
 - Port 3000 nicht „roh“ ohne Schutz direkt ins Internet
+- Externer Zugriff ausschließlich über `443` auf Proxy/Gateway
 
 Empfehlung:
 - Nginx/Caddy als Reverse Proxy vor Backend
 - Nur `/api/*` nach intern `192.168.10.20:3000` weiterleiten
 - API-Key-Prüfung im Backend aktiv lassen
+
+Beispiel Nginx-Regel (verkürzt):
+
+```nginx
+location /api/ {
+  proxy_pass http://192.168.10.20:3000/api/;
+  proxy_set_header Host $host;
+  proxy_set_header X-Forwarded-Proto https;
+}
+```
 
 Dann im Frontend konfigurieren:
 
@@ -89,8 +105,10 @@ API_BASE_URL=https://api.deinprojekt.de
 
 Im Backend `.env` prüfen:
 
-- `ALLOWED_ORIGIN=https://<deine-azure-frontend-url>`
+- `ALLOWED_ORIGIN=https://<deine-azure-frontend-url>` (in Produktion keine Wildcards)
 - `API_KEY=<starker_schluessel>`
+
+Produktiv keine Secrets in Git speichern; stattdessen Secret-Store (z. B. Azure Key Vault) oder geschützte Runtime-Variablen nutzen.
 
 Danach Backend neu starten:
 
@@ -109,7 +127,7 @@ Wenn du Azure-VMs nutzt:
 2. Nur notwendige Ports erlauben:
    - 22 nur von Admin-IP
    - 80/443 öffentlich (für Frontend/Proxy)
-   - 3000 nicht öffentlich, wenn vermeidbar
+   - 3000 nicht öffentlich
 3. Alles andere blockieren.
 
 ---

@@ -22,7 +22,7 @@ Für Anfänger ist ein klarer Plan extrem wichtig. Beispiel:
 - **Windows Host** (MySQL): `192.168.10.10`
 - **pfSense LAN**: `192.168.10.1`
 - **Ubuntu VM (Backend)**: `192.168.10.20`
-- **später Azure**: öffentlicher Zugriff nur auf Backend-Port
+- **später Azure/Internet**: Zugriff auf Backend nur über Reverse-Proxy auf `443` (Backend `3000` bleibt intern)
 
 Hinweis:
 - Nutze für alle internen Systeme ein privates Netz (z. B. `192.168.10.0/24`).
@@ -188,12 +188,15 @@ curl http://127.0.0.1:3000/api/health
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 sudo ufw allow OpenSSH
-sudo ufw allow from <AZURE_ODER_FRONTEND_IP> to any port 3000 proto tcp
+sudo ufw allow from 127.0.0.1 to any port 3000 proto tcp
+sudo ufw allow from <REVERSE_PROXY_ODER_PFSENSE_IP> to any port 3000 proto tcp
 sudo ufw enable
 sudo ufw status verbose
 ```
 
-Wenn Azure-IP noch nicht fix ist, zunächst im Lab-Netz testen und später nachziehen.
+Wichtig:
+- Port `3000` bleibt intern und wird **nicht** direkt aus dem Internet freigegeben.
+- Externe Zugriffe laufen über `443` am Reverse-Proxy/API-Gateway.
 
 ---
 
@@ -207,9 +210,11 @@ PfSense soll den Verkehr sichtbar/regulierbar machen.
    - LAN (dein internes Lab-Netz)
 3. LAN-IP setzen, z. B. `192.168.10.1/24`.
 4. DHCP optional auf pfSense aktivieren (oder statische IPs vergeben).
-5. Firewall-Regeln im LAN:
+5. Firewall-Regeln im LAN/WAN:
    - Erlaube Ubuntu -> MySQL: TCP 3306 zu `192.168.10.10`
-   - Erlaube Frontend/Azure -> Ubuntu: TCP 3000 zu `192.168.10.20`
+   - Erlaube Reverse-Proxy -> Ubuntu: TCP 3000 zu `192.168.10.20`
+   - Erlaube Internet -> Reverse-Proxy: TCP 443
+   - Blockiere Internet -> Ubuntu: TCP 3000
    - Blockiere unnötige Any-Any-Regeln
 6. Logs prüfen (`Status -> System Logs -> Firewall`).
 
@@ -229,4 +234,4 @@ PfSense soll den Verkehr sichtbar/regulierbar machen.
 - Ubuntu-Backend ist stabil in VMware installiert.
 - Backend kann auf MySQL zugreifen.
 - Basis-Firewall ist aktiv (Ubuntu + pfSense).
-- Die Kernpfade (3000/3306) sind dokumentiert und nachvollziehbar.
+- Die Kernpfade (`443` extern, `3000` intern, `3306` intern) sind dokumentiert und nachvollziehbar.
