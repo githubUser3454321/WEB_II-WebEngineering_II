@@ -22,7 +22,7 @@ Für dein aktuelles Setup gibt es zwei praktikable Varianten:
 ### Variante A (einfach): Nur Frontend in Azure
 - Azure hostet nur die statische Oberfläche.
 - Backend bleibt in Ubuntu-VM lokal.
-- Nachteil: Lokales Backend muss aus dem Internet erreichbar sein (Portfreigabe/DDNS/Reverse Proxy nötig).
+- Nachteil: Ein öffentlicher API-Endpunkt (typisch Reverse-Proxy auf `443`) muss sauber betrieben werden.
 
 ### Variante B (stabiler): Frontend + Backend in Azure
 - Azure hostet Frontend.

@@ -9,15 +9,15 @@ Einfache visuelle Referenz für Netzwerkzonen, pfSense-Regeln und erlaubte Verbi
 ```mermaid
 flowchart TB
     Internet((Internet))
+    AZ[Azure Frontend\nPublic Endpoint\n443]
     PFS[pfSense Firewall / NAT]
-    FE[Frontend Host\nPublic Endpoint\n443]
     RP[Reverse Proxy / API Gateway\nPublic Endpoint\n443]
     BE[Backend Host\nPrivate/API Segment\n3000 intern]
     DB[(DB Host\nPrivate Segment\n3306)]
 
+    Internet -->|HTTPS 443| AZ
+    AZ -->|API Calls 443| Internet
     Internet -->|HTTPS 443| PFS
-    PFS -->|Allow 443| FE
-    FE -->|API Calls 443| PFS
     PFS -->|Allow 443| RP
     RP -->|Allow intern 3000| BE
     BE -->|Allow 3306 nur BE -> DB| DB
@@ -32,7 +32,8 @@ flowchart TB
 
     class Internet edge;
     class PFS core;
-    class FE,BE private;
+    class AZ edge;
+    class BE private;
     class DB denied;
 ```
 

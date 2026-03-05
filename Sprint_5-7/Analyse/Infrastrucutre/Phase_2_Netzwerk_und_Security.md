@@ -23,7 +23,8 @@
 
 | Quelle | Ziel | Port/Proto | Aktion | Begründung |
 |---|---|---|---|---|
-| Internet | Reverse-Proxy / Frontend | 443/TCP | ALLOW | Öffentlicher HTTPS-Zugriff |
+| Internet | Frontend (Azure) | 443/TCP | ALLOW | UI erreichbar |
+| Internet | Reverse-Proxy/API-Gateway | 443/TCP | ALLOW | Öffentlicher API-Zugriff via TLS |
 | Reverse-Proxy | Backend | 3000/TCP | ALLOW (intern) | API-Weiterleitung |
 | Backend | DB | 3306/TCP | ALLOW (intern) | DB-Zugriff |
 | Internet | Backend | 3000/TCP | DENY | Kein direkter Node-Zugriff |

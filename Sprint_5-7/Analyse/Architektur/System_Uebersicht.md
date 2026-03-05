@@ -8,7 +8,7 @@ Kurze, professionelle Übersicht der 3-Tier-Architektur für Sprint 5–7.
 ## Architekturdiagramm
 ```mermaid
 flowchart LR
-    U[Benutzer\nBrowser] --> FE[Frontend\nPresentation Tier\n(Azure oder lokal)]
+    U[Benutzer\nBrowser] --> FE[Frontend\nPresentation Tier\n(Azure)]
     FE -->|HTTPS 443 / API Calls| RP[Reverse Proxy / API Gateway\nEdge Tier]
     RP -->|Intern 3000| BE[Backend API\nBusiness Tier\n(Ubuntu VM)]
     BE -->|SQL 3306 intern| DB[(Datenbank\nPersistence Tier\n(Local/VM))]
