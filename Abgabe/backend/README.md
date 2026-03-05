@@ -1,21 +1,22 @@
-# GTC Backend (Sprint 03 Start)
+# GTC Backend
 
-Einfaches Backend-Grundgerüst gemäss Sprint 03:
-- Node.js + Express.js
-- MySQL
-- REST-API für currencies, rates, transactions, users/login
+Node.js + Express + MySQL API für Sprint 5–7.
 
 ## Start
 
 ```bash
 cd backend
+cp .env.example .env
 npm install
 npm start
 ```
 
-## Umgebungsvariablen (optional)
+## Umgebungsvariablen
 
 - `PORT` (default: `3000`)
+- `ALLOWED_ORIGIN` (default: `*`)
+- `API_KEY` (wenn gesetzt: Pflicht für schreibende Endpunkte)
+- `LOG_DIR` (default: `../logs`)
 - `DB_HOST` (default: `127.0.0.1`)
 - `DB_PORT` (default: `3306`)
 - `DB_USER` (default: `root`)
@@ -24,61 +25,31 @@ npm start
 
 ## Datenbank initialisieren
 
-SQL-Datei ausführen:
-
 ```bash
 mysql -u root -p < sql/init.sql
 ```
 
-## Endpunkte
+## Endpunkte (Auszug)
 
 ### Health
 - `GET /api/health`
-
-### Currencies
-- `GET /api/currencies`
-- `POST /api/currencies`
-
-Body Beispiel:
-```json
-{
-  "iso_code": "CHF",
-  "name": "Swiss Franc",
-  "countries": "Switzerland, Liechtenstein"
-}
-```
-
-### Rates
-- `GET /api/rates`
-- `POST /api/rates`
-
-Body Beispiel:
-```json
-{
-  "base_currency": "CHF",
-  "target_currency": "EUR",
-  "rate_value": 1.03,
-  "rate_date": "2026-02-01 10:00:00"
-}
-```
+- `GET /api/status`
 
 ### Transactions
 - `GET /api/transactions`
-- `POST /api/transactions`
+- `GET /api/transactions/:id`
+- `POST /api/transactions` (API-Key)
+- `PUT /api/transactions/:id` (API-Key)
+- `DELETE /api/transactions/:id` (API-Key)
+- `POST /api/transactions/:id/status` (API-Key, Spezialfall)
 
-Body Beispiel:
-```json
-{
-  "transaction_date": "2026-02-01 10:10:00",
-  "user_login": "max",
-  "source_amount": 100,
-  "source_currency": "CHF",
-  "target_currency": "EUR",
-  "exchange_rate": 1.03
-}
-```
-
-### Users / Login
-- `GET /api/users`
-- `POST /api/users`
+### Weitere
+- `GET/POST /api/currencies` (`POST` mit API-Key)
+- `GET/POST /api/rates` (`POST` mit API-Key)
+- `GET/POST /api/users` (`POST` mit API-Key)
 - `POST /api/login`
+
+## Logging
+
+- Request-Logs: `${LOG_DIR}/requests.log`
+- Error-Logs: `${LOG_DIR}/errors.log`

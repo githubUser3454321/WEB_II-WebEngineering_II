@@ -5,55 +5,53 @@ Dieser Ordner enthält alles, was für die Abgabe erforderlich ist:
 - `backend/` – Node.js + Express + MySQL API
 - `frontend/` – HTML/CSS/JS Oberfläche
 
-## ⚠️ Wichtig (zuerst erledigen)
-
-Bevor du das Backend startest, setze bitte die **DB-Credentials** in der Datei `Abgabe/backend/src/db.js` (z. B. Host, User, Passwort, Datenbankname).
-
 ## 1) Voraussetzungen
 
 Bitte installiere folgende Tools:
 
 - **Node.js** (empfohlen: aktuelle LTS-Version)
 - **npm** (ist mit Node.js dabei)
-- **npm / Python 3** (für den statischen Frontend-Server)
+- **Python 3** oder ein anderer statischer Webserver
+- **MySQL**
 
-## 2) Backend starten
+## 2) Backend konfigurieren und starten
 
-### Empfohlener Weg aus dem `Abgabe/`-Ordner
-
-1. Terminal öffnen.
-2. In den Abgabe-Ordner wechseln.
-3. Backend-Abhängigkeiten installieren:
+1. In `Abgabe/backend` wechseln.
+2. `.env.example` kopieren und anpassen:
 
    ```bash
-   npm run install:backend
+   cp .env.example .env
    ```
 
-4. Backend starten:
+3. Abhängigkeiten installieren und Server starten:
 
    ```bash
+   npm install
    npm start
    ```
 
-### Alternativ direkt im `backend/`-Ordner
+Wichtige Variablen in `.env`:
+- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`
+- `API_KEY` (für geschützte Schreib-Endpunkte)
+- `ALLOWED_ORIGIN`
 
-```bash
-cd backend
-npm install
-npm start
-```
+Kontrolle im Browser:
 
-Kontrolle im Browser (optional):
-
-```
+```text
 http://127.0.0.1:3000/api/health
 ```
 
-Wenn alles läuft, sollte ein JSON-Status angezeigt werden.
+## 3) Datenbank initialisieren
 
-Hinweis: Aus Kompatibilitätsgründen funktioniert auch `http://127.0.0.1:3000/api/status`.
+SQL-Datei ausführen:
 
-## 3) Frontend starten
+```bash
+mysql -u root -p < sql/init.sql
+```
+
+Die Datei erzeugt das Schema inkl. Foreign Keys und Seed-Daten.
+
+## 4) Frontend starten
 
 ### Variante A: aus `Abgabe/`
 
@@ -61,50 +59,30 @@ Hinweis: Aus Kompatibilitätsgründen funktioniert auch `http://127.0.0.1:3000/a
 npm run start:frontend
 ```
 
-Danach im Browser öffnen:
+Dann im Browser öffnen:
 
-```
+```text
 http://127.0.0.1:4173
 ```
 
-### Variante B: direkt im `frontend/`-Ordner mit npm
+### Variante B: direkt im `frontend/`-Ordner
 
 ```bash
 cd frontend
 npm start
 ```
 
-### Variante C: Live Server (VS Code)
+## 5) GUI/API Funktionstest
 
-- `frontend/index.html` mit einer Live-Server-Erweiterung starten.
+Die Oberfläche unterstützt für `transactions`:
+- CREATE (`POST /api/transactions`)
+- READ (`GET /api/transactions`)
+- UPDATE (`PUT /api/transactions/{id}`)
+- DELETE (`DELETE /api/transactions/{id}`)
+- Spezialfall (`POST /api/transactions/{id}/status`)
 
-## 4) Anwendung testen
+Im Abschnitt **API Konfiguration** im Frontend können `API Base URL` und `API Key` gesetzt werden.
 
-- Backend muss auf `http://127.0.0.1:3000` laufen.
-- Zusätzlich muss MySQL laufen und die Datenbank `gtc` mit `Abgabe/backend/sql/init.sql` initialisiert sein.
-- Danach Frontend öffnen.
-- Folgende Bereiche prüfen:
-  - Status
-  - Currencies
-  - Rates
-  - Calculator
-  - Login
-  - Neue Transaktion
-  - Transactions
-
-## 5) Hinweise
-
-- Die Frontend-API-Basis ist in `frontend/scripts/main.js` als
-  `http://127.0.0.1:3000/api` hinterlegt.
-- Falls das Backend nicht erreichbar ist, zeigt das Frontend Fallback-Daten für Currencies/Rates.
-- Falls du im `frontend/`-Ordner die API starten willst, nutze:
-
-  ```bash
-  npm run start:api
-  ```
-
-  Dieser Script startet explizit das Backend aus `../backend` (also aus `Abgabe/backend`).
 ## 6) Testprotokoll Sprint 04
 
 - Das geforderte Testprotokoll mit mindestens zehn Testfällen befindet sich in `Abgabe/testprotokoll_sprint04.md`.
-

@@ -14,6 +14,24 @@
                 <p class="subtitle">Frontend mit REST-Anbindung.</p>
             </header>
 
+
+            <section class="card">
+                <h2>API Konfiguration</h2>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="apiBaseInput">API Base URL</label>
+                        <input id="apiBaseInput" type="text" value="http://127.0.0.1:3000/api">
+                    </div>
+                    <div class="form-field">
+                        <label for="apiKeyInput">API Key (für geschützte Endpunkte)</label>
+                        <input id="apiKeyInput" type="password" value="">
+                    </div>
+                    <div class="form-field">
+                        <button onclick="applyApiConfig();">Übernehmen & neu laden</button>
+                    </div>
+                </div>
+            </section>
+
             <section class="card">
                 <h2>Status</h2>
                 <div id="statusOutput" class="output"></div>
