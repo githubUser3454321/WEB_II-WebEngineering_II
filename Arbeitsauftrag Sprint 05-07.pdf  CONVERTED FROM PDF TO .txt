@@ -1,0 +1,442 @@
+Arbeitsauftrag Sprint 5–7
+
+Lehrgang: Informatiker HF
+Modul: Web Engineering II
+
+Lernziele
+
+Der Student, die Studentin kann:
+
+eine verteilte Applikationsarchitektur planen und begründen
+
+REST-API, Business-Logik und Datenbank auf unterschiedlichen Plattformen betreiben
+
+minimale Sicherheitsanforderungen technisch umsetzen
+
+Netzwerkrandbedingungen (Firewall, Portweiterleitung, Isolation) berücksichtigen
+
+ein Deployment reproduzierbar dokumentieren
+
+API-Tests automatisiert durchführen
+
+Art der Aufgabe
+
+Einzelarbeit / Partnerarbeit
+
+➔ Vertiefungsaufgabe
+
+Niveau Stufen
+
+Basic (Grundstufe)
+Advanced (höhere Ebene)
+Expert (Experte)
+
+Zeitbedarf
+
+12 Lektionen
+
+Ausgangslage
+
+Im bisherigen Projekt wurden GUI (Frontend), RESTful Web Service (Backend) sowie eine relationale Datenbank (Persistenz) implementiert (Sprint 01–04).
+
+Die Geschäftsleitung möchte nun prüfen, ob die Applikation produktionsnah betrieben werden kann. Dazu soll die Architektur realitätsnah verteilt werden.
+
+Eine monolithische Struktur (alles lokal) genügt nicht mehr den Anforderungen an Skalierbarkeit, Sicherheit und Wartbarkeit.
+
+Die Applikation soll neu aus drei getrennten Schichten bestehen:
+
+Frontend (GUI: Presentation Tier)
+
+Backend (RESTful Web Service / Business-Service / API-Schicht: Business Tier)
+
+Persistence (Datenbank: EIS Tier)
+
+Diese drei Teile müssen auf unterschiedlichen Plattformen betrieben werden.
+
+Verfügbare Plattformen
+
+Microsoft Azure
+
+Ubuntu Linux VM (VMware, vmnet1)
+
+Zugriff via pfSense Firewall
+
+Ausgehend ins Internet: erlaubt
+
+Portweiterleitungen über pfSense: erlaubt
+
+Lokale Umgebung (Laptop)
+
+Die Plattformwahl ist frei.
+
+Wichtig: Jede Schicht muss auf einer anderen Plattform laufen.
+
+Beispiele:
+
+Frontend: lokal – Backend: Azure – Persistence: Ubuntu
+
+Frontend: Azure – Backend: Ubuntu – Persistence: lokal
+
+Projektanforderungen (verbindlich)
+Funktionale Anforderungen
+1. mindestens 5 REST-Endpunkte
+
+CRUD
+
+1 Spezialfall (z. B. Statuswechsel oder Berechnung)
+
+2. Business-Logik
+
+z. B.:
+
+Preisberechnung
+
+Statusübergänge
+
+Validierung
+
+3. Datenbank
+
+mindestens 3 Tabellen
+
+Relationen (Foreign Keys)
+
+4. automatisierte Tests
+
+mindestens 5 API-Tests
+
+Postman/Newman oder pytest/jest
+
+5. Logging
+
+Request-Logging
+
+Fehler-Logging
+
+Minimale Sicherheitsanforderungen
+
+Datenbank nicht öffentlich exponiert
+
+DB nur vom Backend erreichbar
+
+Secrets nicht im Code (env vars oder Secret-Datei)
+
+Authentifizierung mindestens via Token oder API-Key
+
+TLS optional (Bonus)
+
+Abnahmekriterien
+
+drei Plattformen effektiv genutzt
+
+System ist lauffähig
+
+Tests erfolgreich
+
+Deployment-Dokumentation vollständig reproduzierbar
+
+Arbeitsauftrag 1 (Partnerarbeit)
+
+Erarbeiten Sie ein vollständiges Konzeptdokument mit folgenden Inhalten:
+
+1. Ausgangslage
+
+Aktuelle Situation
+
+Problemstellung
+
+Technische Rahmenbedingungen
+
+Organisatorische Rahmenbedingungen
+
+Bezug zum bestehenden Projekt
+
+Erwartetes Resultat:
+Strukturiertes Dokument mit nachvollziehbarer Problemdefinition und klarer Zielsetzung.
+
+2. Lösungsansatz
+
+Beschreibung
+
+Vor- und Nachteile
+
+Risiken
+
+Erwartetes Resultat:
+Beschreibung mit technischer Tiefe.
+
+3. Entscheid / Begründung
+
+Bewertungsmatrix oder nachvollziehbare Argumentation
+
+Bezug zu Anforderungen
+
+klare Wahl einer Variante
+
+Erwartetes Resultat:
+Begründete Architekturentscheidung.
+
+4. Grobarchitektur / Umsetzungskonzept
+
+Netzwerkplan (inkl. pfSense)
+
+Systemübersicht
+
+Schnittstellen
+
+eingesetzte Technologien
+
+Sicherheitskonzept
+
+Erwartetes Resultat:
+Architekturdiagramm + kurze technische Beschreibung.
+
+5. Risiken und Massnahmen
+
+Technische Risiken
+
+Organisatorische Risiken
+
+Gegenmassnahmen
+
+Erwartetes Resultat:
+Risikotabelle mit Bewertung und Massnahmen.
+
+6. Test- und Abnahmekonzept
+
+Testarten
+
+Teststrategie
+
+Abnahmekriterien
+
+Erwartetes Resultat:
+Testkonzept mit klaren Prüfpunkten.
+
+Arbeitsauftrag 2 (Partnerarbeit)
+
+Praxis – Umsetzung der verteilten Systemarchitektur.
+
+Im ersten Arbeitsauftrag haben Sie ein technisches Konzept für den verteilten Betrieb Ihrer Applikation erstellt und begründet. Nun wird dieses Konzept produktiv umgesetzt.
+
+Ziel ist es, die drei definierten Schichten:
+
+Frontend (Presentation Tier)
+
+Backend (Business Tier)
+
+Persistence (EIS Tier)
+
+auf drei unterschiedlichen Plattformen zu betreiben und technisch korrekt miteinander zu verbinden.
+
+Die definierten Sicherheits- und Netzwerkvorgaben müssen eingehalten werden.
+
+Die Umsetzung muss so dokumentiert sein, dass eine Drittperson die komplette Umgebung ohne zusätzliche Recherche nachbauen kann.
+
+Aufgabe 2.1 – Vorbereitung der Plattformen
+
+Richten Sie die drei gewählten Plattformen gemäss Ihrem Konzept ein.
+
+Umzusetzende Punkte:
+
+Installation der benötigten Laufzeitumgebungen
+(z. B. Node.js, NPM, Python, DBMS usw.)
+
+Einrichten der Netzwerkverbindungen
+
+Konfiguration der Firewall-Regeln (insbesondere bei pfSense)
+
+Sicherstellen, dass die Datenbank nicht öffentlich erreichbar ist
+
+Falls Portweiterleitungen notwendig sind, müssen diese sauber dokumentiert werden.
+
+Erwartetes Resultat
+
+drei lauffähige Umgebungen gemäss Architekturkonzept
+
+Netzwerkverbindungen funktionieren
+
+Datenbank ist nur intern erreichbar
+
+dokumentierte Firewall- und Portkonfiguration
+
+Aufgabe 2.2 – Deployment der Datenbank
+
+Installieren und konfigurieren Sie die Datenbank auf der gewählten Plattform.
+
+Die Datenbank muss:
+
+mindestens drei Tabellen enthalten
+
+mindestens eine Beziehung (Foreign Key) enthalten
+
+Testdaten enthalten
+
+nur vom Backend erreichbar sein
+
+Überprüfen Sie die Erreichbarkeit gezielt mit und ohne Berechtigung.
+
+Erwartetes Resultat
+
+funktionsfähige relationale Datenbank
+
+ER-Diagramm oder tabellarische Struktur
+
+Nachweis, dass kein externer Zugriff möglich ist
+
+dokumentierte Installations- und Konfigurationsschritte
+
+Aufgabe 2.3 – Deployment der Business-Logik
+
+Deployen Sie die Business- / Service-Schicht auf der vorgesehenen Plattform.
+
+Diese Schicht muss:
+
+mit der Datenbank kommunizieren
+
+mindestens eine fachliche Regel implementieren
+(z. B. Validierung, Berechnung, Statuswechsel)
+
+Fehler sauber behandeln
+
+Fehler protokollieren
+
+Verwenden Sie keine im Code hinterlegten Zugangsdaten.
+
+Secrets müssen über:
+
+Umgebungsvariablen
+oder
+
+eine gesicherte Konfigurationsdatei
+
+eingebunden werden.
+
+Erwartetes Resultat
+
+Backend verbindet sich erfolgreich mit der DB
+
+Business-Regel funktioniert nachweislich
+
+keine sensiblen Daten im Code
+
+Fehler werden geloggt
+
+Aufgabe 2.4 – Deployment des GUI
+
+Die GUI-Schicht muss mindestens fünf REST-Endpunkte nutzen:
+
+CREATE
+
+READ
+
+UPDATE
+
+DELETE
+
+Spezialfall (z. B. Berechnung oder Statuswechsel)
+
+Zusätzlich ist eine einfache Authentifizierung umzusetzen:
+
+Token oder API-Key
+
+Überprüfen Sie:
+
+korrekte HTTP-Statuscodes
+
+strukturierte JSON-Antworten
+
+Zugriffsschutz auf geschützte Endpunkte
+
+Erwartetes Resultat
+
+mindestens fünf funktionierende Endpunkte
+
+Authentifizierung funktioniert
+
+strukturierte JSON-Responses
+
+dokumentierte API-Definition
+
+Aufgabe 2.5 – Logging
+
+Implementieren Sie ein Logging-Konzept mit:
+
+Request-Logging (jede Anfrage wird protokolliert)
+
+Fehler-Logging (inkl. Zeitstempel und Fehlermeldung)
+
+Logs dürfen nicht im Projektordner verloren gehen, sondern müssen strukturiert gespeichert werden.
+
+Erwartetes Resultat
+
+nachvollziehbare Logdateien
+
+getrennte Protokollierung von normalen Requests und Fehlern
+
+dokumentierte Speicherorte der Logs
+
+Aufgabe 2.6 – Automatisierte Tests
+
+Erstellen Sie mindestens fünf automatisierte API-Tests mit:
+
+Postman / Newman
+oder
+
+pytest / jest
+
+Die Tests müssen:
+
+erfolgreich ausführbar sein
+
+mindestens einen Negativfall enthalten
+
+in der Dokumentation beschrieben sein
+
+Erwartetes Resultat
+
+automatisierter Testlauf mit Resultatnachweis
+
+dokumentierte Testfälle
+
+mindestens ein Fehlerfall getestet
+
+Aufgabe 2.7 – Deployment-Dokumentation
+
+Erstellen Sie eine vollständige Installations- und Deployment-Anleitung.
+
+Diese muss enthalten:
+
+Übersicht der gewählten Plattformverteilung
+
+Installationsschritte pro Plattform
+
+Konfigurationsschritte
+
+Firewall-Regeln
+
+Ports
+
+Umgebungsvariablen
+
+Startbefehle
+
+Testdurchführung
+
+Die Dokumentation muss so geschrieben sein, dass eine Drittperson das System ohne zusätzliche Recherche nachbauen kann.
+
+Erwartetes Resultat
+
+vollständige, strukturierte Deployment-Dokumentation
+
+Schritt-für-Schritt-Anleitung
+
+technisch nachvollziehbar
+
+reproduzierbares System
+
+Termine
+
+Abnahme der Anlage: Block 08 am 26.03.2026
+
+Abgabe Dokumentation: 29.03.2026
