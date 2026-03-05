@@ -31,6 +31,11 @@ Für dein aktuelles Setup gibt es zwei praktikable Varianten:
 
 Für Anfänger ist Variante A oft schneller startbar, Variante B ist langfristig meist sauberer.
 
+### Entscheidung für diesen Sprint
+
+- Für Sprint 5–7 bleibt die verbindliche Architektur: **Variante A** (Frontend in Azure, Backend auf Ubuntu-VM, DB lokal).
+- Variante B ist als **spätere Betriebsoptimierung** zu verstehen und wird aktuell nicht als Abnahmepflicht umgesetzt.
+
 ---
 
 ## 2) Azure Grundaufbau

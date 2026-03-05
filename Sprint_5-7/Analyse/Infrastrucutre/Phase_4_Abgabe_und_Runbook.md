@@ -11,6 +11,7 @@ Sammelt und versioniert mindestens:
 - API-Testreport (inkl. Negativfall)
 - Log-Auszüge (Request + Error)
 - Sicherheitsnachweis „DB extern blocked“
+- ADR/Entscheidungsnotiz zur Architektur-Wahl (warum FE/BE/DB so platziert sind)
 - Screenshots von Deployments/Regeln/Testergebnissen
 
 ## 2) Frontend-Inbetriebnahme explizit dokumentieren

@@ -22,6 +22,12 @@ Diese Anleitung übersetzt die offenen Punkte aus dem letzten Chat in eine **kon
 - **Datenbank (MySQL)** läuft auf Plattform C (lokal/LAN-Server)
 - DB ist **nicht öffentlich erreichbar**; nur Backend darf zugreifen.
 
+### Architektur-Wahl (Platzierung) für Sprint 5–7
+
+- Verbindlich für die aktuelle Umsetzung: **FE in Azure, BE auf Ubuntu-VM, DB lokal**.
+- Öffentlicher Zugriff nur via `443`; `3000` (Backend) und `3306` (DB) bleiben intern.
+- Ein möglicher späterer Evolutionsschritt (nicht Teil der aktuellen Abnahme) ist die Verlagerung des Backends nach Azure.
+
 ---
 
 ## Reihenfolge heute

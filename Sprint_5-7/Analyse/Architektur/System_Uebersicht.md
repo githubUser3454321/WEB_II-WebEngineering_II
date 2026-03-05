@@ -30,6 +30,16 @@ flowchart LR
 | Backend | Business-Logik, Auth, Logging | Node.js + Express |
 | Datenbank | Persistenz, Relationen, Constraints | MySQL/PostgreSQL |
 
+## Platzierung der Umgebungen (Architektur-Wahl)
+| Ebene | Sprint 5–7 (verbindlich) | Option nach Sprint 7 |
+|---|---|---|
+| Frontend | Azure (öffentlich, 443) | Azure |
+| Reverse Proxy / Gateway | Edge/Public 443 | Edge/Public 443 |
+| Backend | Ubuntu-VM (VMware, intern 3000) | Azure VM/App Service (intern hinter Gateway) |
+| Datenbank | lokal/LAN, nur intern erreichbar | lokal/LAN oder private Managed-DB |
+
+Hinweis: Für die aktuelle Abgabe bleibt das Backend auf Ubuntu-VM; ein Umzug nach Azure ist eine spätere Betriebsoption.
+
 ## Endpunkt-Mindestumfang
 - `GET /api/<resource>`
 - `GET /api/<resource>/:id`
